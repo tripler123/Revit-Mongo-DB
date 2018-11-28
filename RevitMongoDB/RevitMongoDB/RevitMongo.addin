@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>Revit Mongo DB</Text>
+    <FullClassName>RevitMongoDB.RevitMongo</FullClassName>
+    <Assembly>RevitMongoDB.dll</Assembly>
+    <AddInId>
+      f7097b33-61b9-41e3-b6e7-f9e25dec9a14
+    </AddInId>
+    <VendorId>Renzo Rios - Tripler123</VendorId>
+    <VendorDescription>GitHub, https://github.com/tripler123 </VendorDescription>
+  </AddIn>
+</RevitAddIns>
