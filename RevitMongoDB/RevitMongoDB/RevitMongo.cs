@@ -22,7 +22,7 @@ namespace RevitMongoDB
     {
         static MongoClient client = new MongoClient();
         static IMongoDatabase db = client.GetDatabase("RevitDB");
-        static IMongoCollection<MongoElement> collection = db.GetCollection<MongoElement>("mongoElements");
+        
 
         public Result Execute(ExternalCommandData commandData, 
                               ref string message, 
@@ -32,21 +32,26 @@ namespace RevitMongoDB
             UIDocument uiDoc = uiApp.ActiveUIDocument;
             Document doc = uiDoc.Document;
 
-            IList<Reference> pickedObjs = uiDoc.Selection.PickObjects(ObjectType.Element, "Selecciones los elementos");
-            List<ElementId> ids = (from Reference r in pickedObjs select r.ElementId).ToList();
+            string projectName = doc.ProjectInformation.UniqueId;
+            IMongoCollection<MongoElement> collection = db.GetCollection<MongoElement>(projectName);
+
             List<Element> lstElement = new List<Element>();
 
-            
+            lstElement = Util.AllElement(doc);
 
-            Element e = doc.GetElement(ids[0]);
-
+            string idElemento = "";
             string elementName = "";
             string elementLevel = "";
 
-            elementName =  Util.ParameterToString(e.LookupParameter("Elemento"));
-            elementLevel = Util.ParameterToString(e.LookupParameter("Nivel del Elemento"));
-            MongoElement mongoEl = new MongoElement(elementName, elementLevel);
-            collection.InsertOne(mongoEl);
+            foreach (Element el in lstElement)
+            {
+                idElemento = el.Id.ToString();
+                elementName = Util.ParameterToString(el.LookupParameter("Elemento"));
+                elementLevel = Util.ParameterToString(el.LookupParameter("Nivel del Elemento"));
+                MongoElement mongoEl = new MongoElement(elementName, elementLevel, idElemento);
+                collection.InsertOne(mongoEl);
+            }
+
             TaskDialog.Show("Mensaje de Finalizacion", "Usted Ingresado la Información con exito");
             
 

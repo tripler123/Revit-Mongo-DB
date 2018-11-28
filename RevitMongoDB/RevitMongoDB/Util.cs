@@ -64,5 +64,30 @@ namespace RevitMongoDB
             return val;
         }
 
+        public static bool IsPhysicalElement(this Element e)
+        {
+            if (e.Category == null) return false;
+            if (e.ViewSpecific) return false;
+            // exclude specific unwanted categories
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_HVAC_Zones) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_SharedBasePoint) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_ProjectBasePoint) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_VolumeOfInterest) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_SectionBox) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_Materials) return false;
+            if (((BuiltInCategory)e.Category.Id.IntegerValue) == BuiltInCategory.OST_Lines) return false;
+            return e.Category.CategoryType == CategoryType.Model && e.Category.CanAddSubcategory;
+        }
+
+        public static List<Element> AllElement(Document doc)
+        {
+            List<Element> AllElem = new FilteredElementCollector(doc)
+                    .WhereElementIsNotElementType()
+                    .Where(e => e.IsPhysicalElement())
+
+                    .ToList<Element>();
+
+            return AllElem;
+        }
     }
 }

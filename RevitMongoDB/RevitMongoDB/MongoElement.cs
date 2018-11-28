@@ -12,13 +12,16 @@ namespace RevitMongoDB
     {
         [BsonId]
         public ObjectId Id { get; set; }
+        [BsonElement("IdElemento")]
+        public String IdElemento { get; set; }
         [BsonElement("Elemento")]
         public String Elemento { get; set; }
         [BsonElement("NivelDelElemento")]
         public String NivelDelElemento { get; set;  }
 
-        public MongoElement(string elemento, string nivelDelElemento)
+        public MongoElement(string elemento, string nivelDelElemento, string idElemento)
         {
+            IdElemento = idElemento;
             Elemento = elemento;
             NivelDelElemento = nivelDelElemento;
         }
